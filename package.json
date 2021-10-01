@@ -1,0 +1,14 @@
+{
+  "name": "nat-punch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "publicserver.js",
+  "scripts": {
+    "start": "node publicserver"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.1.0"
+  }
+}
