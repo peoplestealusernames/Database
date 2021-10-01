@@ -1,15 +1,11 @@
 import { Socket } from 'net'
 import { SelfTCP } from './selfTCP'
 
-Run()
-
 var ip: string
 var port: number
 var selfSocket: Socket
 
-async function Run() {
-    SelfTCP(NewSocket)
-}
+SelfTCP(NewSocket)
 
 function NewSocket(socket: Socket) {
     if (!selfSocket) {
