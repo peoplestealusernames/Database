@@ -13,6 +13,12 @@ function GetSocket() {
             resolve(socket)
         })
 
+        socket.on('data', (data) => {
+            const Rec = data.toString()
+            console.log(Rec)
+        })
+
+        socket.write('PING')
         socket.on('error', rej)
     })
 }

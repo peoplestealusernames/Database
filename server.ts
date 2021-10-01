@@ -25,7 +25,11 @@ function NewSocket(socket: Socket) {
     console.log('New connection ' + socket.remoteAddress + ":" + socket.remotePort?.toString())
 
     socket.on('data', function (data) {
-        console.log(data.toString());
+        const Rec = data.toString()
+        console.log(Rec);
+        if (Rec == 'PING') {
+            socket.write('PONG')
+        }
     });
 
     socket.on('error', (err: any) => { console.log(err) })
