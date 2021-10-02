@@ -2,6 +2,7 @@ import { Socket } from 'net'
 import { SelfTCP } from './selfTCP'
 import { UpdateIP, LogIn } from './FBPut'
 import { GenKeys, Encrypt, Decrypt } from './crypto'
+import { Connect } from './ConnectionClass'
 
 var ip: string
 var port: number
@@ -29,15 +30,13 @@ function NewSocket(socket: Socket) {
 
     console.log('New connection ' + socket.remoteAddress + ":" + socket.remotePort?.toString())
 
-    socket.on('data', (data) => {
-        console.log(data.toString())
-        const Rec = Decrypt(privateKey, data)
-        console.log(Rec);
-        if (Rec == 'PING') {
-            socket.write('PONG')
+    const Client = new Connect(socket)
+    Client.on('data', (data) => {
+        console.log(data)
+        if (data == 'PING') {
+            Client.write('PONG')
         }
     });
 
-    socket.write(JSON.stringify(publicKey))
     socket.on('error', (err: any) => { console.log(err) })
 }

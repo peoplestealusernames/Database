@@ -1,9 +1,28 @@
-import { generateKeyPair, privateDecrypt, publicEncrypt, createPublicKey, createPrivateKey } from "crypto";
+import { KeyObject, generateKeyPairSync, generateKeyPair, privateDecrypt, publicEncrypt, createPrivateKey } from "crypto";
+
+export function GenKeysSync(modulusLength = 1024) {
+    return generateKeyPairSync("rsa", {
+        modulusLength,
+        //TODO:format from file
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem',
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+            cipher: 'aes-256-cbc',
+            //TODO:passphrase
+            passphrase: 'top secret'
+        }
+    });
+}
 
 export function GenKeys(modulusLength = 1024): Promise<{ publicKey: string, privateKey: string }> {
     return new Promise((res, rej) => {
         generateKeyPair("rsa", {
             modulusLength,
+            //TODO:format from file
             publicKeyEncoding: {
                 type: 'spki',
                 format: 'pem',
@@ -12,6 +31,7 @@ export function GenKeys(modulusLength = 1024): Promise<{ publicKey: string, priv
                 type: 'pkcs8',
                 format: 'pem',
                 cipher: 'aes-256-cbc',
+                //TODO:passphrase
                 passphrase: 'top secret'
             }
         }, (err: any, publicKey: string, privateKey: string) => {
@@ -25,14 +45,18 @@ export function Encrypt(publicKey: string, Text: string) {
     return publicEncrypt(publicKey, Buffer.from(Text, "utf8"))
 }
 
-export function Decrypt(privateKey: string, Data: NodeJS.ArrayBufferView) {
-    const privateKey1 = createPrivateKey({
-        key: privateKey,
-        type: 'pkcs8',
-        format: 'pem',
-        passphrase: 'top secret',
-    })
-    return privateDecrypt(privateKey1, Data).toString()
+export function Decrypt(privateKey: string | KeyObject, Data: NodeJS.ArrayBufferView) {
+    if (typeof (privateKey) == 'string') {
+        privateKey = createPrivateKey({
+            //TODO:format from file
+            key: privateKey,
+            type: 'pkcs8',
+            format: 'pem',
+            //TODO:passphrase
+            passphrase: 'top secret',
+        })
+    }
+    return privateDecrypt(privateKey, Data).toString()
 }
 
 //Test()

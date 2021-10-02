@@ -3,10 +3,12 @@ import { readFileSync } from "fs"
 import { connect } from 'net'
 import { GenKeys, Encrypt, Decrypt } from './crypto'
 import { createPublicKey } from "crypto"
+import { Connect } from "./ConnectionClass"
 
 const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8'))
 
 var publicKey: string, privateKey: string
+var Server: Connect
 
 start()
 async function start() {
@@ -23,16 +25,11 @@ function GetSocket() {
             //socket.write(publicKey)
             resolve(socket)
         })
+        //TODO:Rework
+        Server = new Connect(socket)
 
-        var RemotepublicKey: string
-        socket.on('data', (data: Buffer) => {
-            console.log(data.toString())
-            if (!RemotepublicKey) {
-                RemotepublicKey = JSON.parse(data.toString())
-                const Send = Encrypt(RemotepublicKey, 'PING')
-                socket.write(Send)
-            }
-        })
+        Server.on('data', console.log)
+        Server.on('setup', () => { Server.write('PING') })
 
         socket.on('error', rej)
     })
