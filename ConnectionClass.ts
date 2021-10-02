@@ -4,7 +4,7 @@ import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
 
 interface ConnectionEvents {
-    'data': (data: Object | string) => void;
+    'data': (data: object | string) => void;
     'setup': () => void
 }
 
@@ -53,6 +53,13 @@ export class Connection extends EventEmitter {
         }
         const Send = Encrypt(this.remotePublicKey, msg)
         this.socket.write(Send, cb)
+    }
+
+    public CB(data: object | string) {
+        if (typeof data == 'object')
+            data = JSON.stringify(data)
+
+        this.write(data, console.log)//TODO: error handling
     }
 }
 

@@ -1,34 +1,14 @@
 import { request } from "https"
 import { readFileSync } from "fs"
 import { connect } from 'net'
-import { GenKeys, Encrypt, Decrypt } from './crypto'
-import { createPublicKey } from "crypto"
 import { Connection } from "./ConnectionClass"
+import { DataHandler, DataManger, Request } from "./DMClass"
 
 const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8'))
 
-var publicKey: string, privateKey: string
-
 start()
 async function start() {
-    const Keys = await GenKeys()
-    publicKey = Keys.publicKey
-    privateKey = Keys.privateKey
     GetSocket()
-}
-
-function GetSocket() {
-    return new Promise(async (resolve, rej) => {
-        const HostAdress = await GetIP()
-        const socket = connect({ port: HostAdress.port, host: HostAdress.ip })
-        //TODO:Rework
-        const Server = new Connection(socket)
-
-        Server.on('data', console.log)
-        Server.on('setup', () => { resolve(Server) })
-
-        socket.on('error', rej)
-    })
 }
 
 function GetIP(): Promise<{ port: number, ip: string }> {
@@ -47,3 +27,44 @@ function GetIP(): Promise<{ port: number, ip: string }> {
     })
 }
 
+function GetSocket() {
+    return new Promise(async (resolve, rej) => {
+        const HostAdress = await GetIP()
+        const socket = connect({ port: HostAdress.port, host: HostAdress.ip })
+        //TODO:Rework
+        const Server = new Connection(socket)
+
+        Server.on('data', (data) => DataRec(data, Server))
+        Server.on('setup', () => { Server.write(JSON.stringify(Send as Object)); resolve(Server) })
+
+        socket.on('error', rej)
+    })
+}
+
+/////////////////////////
+//END OF CLIENT REC
+//START OF CLIENT HANDLING
+/////////////////////////
+
+/*const Send: Request = {
+    method: 'PUT',
+    path: 'test',
+    data: 'Aye',
+    save: true
+}*/
+
+const Send: Request = {
+    method: 'GET',
+    path: 'test'
+}
+
+const DM = new DataManger()
+
+function DataRec(data: string | object, Client: Connection) {
+    console.log(data)
+    if (data === 'PING') {
+        Client.write('PONG')
+    }
+
+    DataHandler(data, Client, DM)
+}

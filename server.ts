@@ -3,6 +3,8 @@ import { SelfTCP } from './selfTCP'
 import { UpdateIP, LogIn } from './FBPut'
 import { GenKeys, Encrypt, Decrypt } from './crypto'
 import { Connection } from './ConnectionClass'
+import { EventEmitter } from 'events'
+import { DataHandler, DataManger } from './DMClass'
 
 var ip: string
 var port: number
@@ -31,7 +33,7 @@ function NewSocket(socket: Socket) {
     console.log('New connection ' + socket.remoteAddress + ":" + socket.remotePort?.toString())
 
     const Client = new Connection(socket)
-    Client.on('data', (data) => { DataHandler(data, Client) });
+    Client.on('data', (data) => { DataRec(data, Client) });
 
     socket.on('error', (err: any) => { console.log(err) })
 }
@@ -41,9 +43,13 @@ function NewSocket(socket: Socket) {
 //START OF CLIENT HANDLING
 /////////////////////////
 
-function DataHandler(data: string | Object, Client: Connection) {
+const DM = new DataManger('./Pass/ServerData.json')
+
+function DataRec(data: string | object, Client: Connection) {
     console.log(data)
     if (data === 'PING') {
         Client.write('PONG')
     }
+
+    DataHandler(data, Client, DM)
 }
