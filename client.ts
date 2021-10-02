@@ -1,24 +1,39 @@
 import { request } from "https"
 import { readFileSync } from "fs"
 import { connect } from 'net'
+import { GenKeys, Encrypt, Decrypt } from './crypto'
+import { createPublicKey } from "crypto"
 
 const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8'))
 
-GetSocket()
+var publicKey: string, privateKey: string
+
+start()
+async function start() {
+    const Keys = await GenKeys()
+    publicKey = Keys.publicKey
+    privateKey = Keys.privateKey
+    GetSocket()
+}
 
 function GetSocket() {
     return new Promise(async (resolve, rej) => {
         const HostAdress = await GetIP()
         const socket = connect({ port: HostAdress.port, host: HostAdress.ip }, () => {
+            //socket.write(publicKey)
             resolve(socket)
         })
 
-        socket.on('data', (data) => {
-            const Rec = data.toString()
-            console.log(Rec)
+        var RemotepublicKey: string
+        socket.on('data', (data: Buffer) => {
+            console.log(data.toString())
+            if (!RemotepublicKey) {
+                RemotepublicKey = JSON.parse(data.toString())
+                const Send = Encrypt(RemotepublicKey, 'PING')
+                socket.write(Send)
+            }
         })
 
-        socket.write('PING')
         socket.on('error', rej)
     })
 }
