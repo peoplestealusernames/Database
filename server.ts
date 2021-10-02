@@ -2,7 +2,7 @@ import { Socket } from 'net'
 import { SelfTCP } from './selfTCP'
 import { UpdateIP, LogIn } from './FBPut'
 import { GenKeys, Encrypt, Decrypt } from './crypto'
-import { Connect } from './ConnectionClass'
+import { Connection } from './ConnectionClass'
 
 var ip: string
 var port: number
@@ -30,13 +30,20 @@ function NewSocket(socket: Socket) {
 
     console.log('New connection ' + socket.remoteAddress + ":" + socket.remotePort?.toString())
 
-    const Client = new Connect(socket)
-    Client.on('data', (data) => {
-        console.log(data)
-        if (data == 'PING') {
-            Client.write('PONG')
-        }
-    });
+    const Client = new Connection(socket)
+    Client.on('data', (data) => { DataHandler(data, Client) });
 
     socket.on('error', (err: any) => { console.log(err) })
+}
+
+/////////////////////////
+//END OF CLIENT REC
+//START OF CLIENT HANDLING
+/////////////////////////
+
+function DataHandler(data: string | Object, Client: Connection) {
+    console.log(data)
+    if (data === 'PING') {
+        Client.write('PONG')
+    }
 }

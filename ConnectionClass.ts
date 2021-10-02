@@ -3,22 +3,22 @@ import { KeyObject, createPrivateKey } from 'crypto'
 import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
 
-interface ConnectEvents {
+interface ConnectionEvents {
     'data': (data: Object | string) => void;
     'setup': () => void
 }
 
-export declare interface Connect {
-    on<U extends keyof ConnectEvents>(
-        event: U, listener: ConnectEvents[U]
+export declare interface Connection {
+    on<U extends keyof ConnectionEvents>(
+        event: U, listener: ConnectionEvents[U]
     ): this;
 
-    emit<U extends keyof ConnectEvents>(
-        event: U, ...args: Parameters<ConnectEvents[U]>
+    emit<U extends keyof ConnectionEvents>(
+        event: U, ...args: Parameters<ConnectionEvents[U]>
     ): boolean;
 }
 
-export class Connect extends EventEmitter {
+export class Connection extends EventEmitter {
     public socket: Socket
 
     public publicKey: string
@@ -36,6 +36,7 @@ export class Connect extends EventEmitter {
         this.publicKey = Keys.publicKey
         this.privateKey = Keys.privateKey
         this.privateKeyObj = createPrivateKey({
+            //TODO: Formating in file
             key: this.privateKey,
             type: 'pkcs8',
             format: 'pem',
@@ -55,7 +56,7 @@ export class Connect extends EventEmitter {
     }
 }
 
-function SetUpSocket(Client: Connect) {
+function SetUpSocket(Client: Connection) {
     Client.socket.on('data', (data) => {
         //console.log(data)
         if (Client.Encrypted) {
@@ -77,7 +78,7 @@ function SetUpSocket(Client: Connect) {
                 } else {
                     console.log(err)
                 }
-            } //TODO: ERR handling and drop connection if fails
+            } //TODO: ERR handling and drop Connectionion if fails
             if (Client.remotePublicKey && Client.RecHandShake) {
                 Client.Encrypted = true
                 Client.emit('setup')
