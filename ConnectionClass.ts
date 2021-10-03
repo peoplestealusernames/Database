@@ -2,6 +2,7 @@ import { Socket } from 'net'
 import { KeyObject, createPrivateKey } from 'crypto'
 import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
+import { DataManger } from './DMClass'
 
 interface ConnectionEvents {
     'data': (data: object | string) => void;
@@ -29,6 +30,8 @@ export class Connection extends EventEmitter {
     public RecHandShake = false
     public Encrypted = false
 
+    public Listens: { DM: DataManger, path: string }[] = []
+
     public constructor(socket: Socket) {
         super()
         this.socket = socket
@@ -45,6 +48,8 @@ export class Connection extends EventEmitter {
         })
 
         SetUpSocket(this)
+
+        this.CB = this.CB.bind(this)
     }
 
     public write(msg: string, CallBack?: (err?: Error) => void) {
@@ -65,6 +70,12 @@ export class Connection extends EventEmitter {
 }
 
 function SetUpSocket(Client: Connection) {
+    Client.socket.on('close', (HadErr) => {
+        for (const k of Client.Listens) {
+            k.DM.off(k.path, Client.CB)
+        }
+    })
+
     Client.socket.on('data', (data) => {
         if (Client.Encrypted) {
             var msg = Decrypt(Client.privateKeyObj, data).toString()

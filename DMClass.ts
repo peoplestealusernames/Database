@@ -43,9 +43,10 @@ export class DataManger extends EventEmitter {
                 break
 
             case ('LISTEN'):
-                const CB = Client.CB.bind(Client)
+                const CB = Client.CB
                 this.on(Req.path, CB)
                 CB(this.Get(Req.path, true))
+                Client.Listens.push({ path: Req.path, DM: this })
                 break
         }
     }

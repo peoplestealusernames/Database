@@ -53,11 +53,7 @@ function GetSocket() {
     save: true
 }*/
 
-const Send: Request = {
-    method: 'PUT',
-    path: 'test',
-    data: 'lets go'
-}
+const Send: Request = new Request('PUT', 'test', 'lets go')
 
 const DM = new DataManger()
 
