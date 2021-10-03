@@ -1,9 +1,8 @@
 import { Socket } from 'net'
 import { SelfTCP } from './selfTCP'
 import { UpdateIP, LogIn } from './FBPut'
-import { GenKeys, Encrypt, Decrypt } from './crypto'
+import { GenKeys } from './crypto'
 import { Connection } from './ConnectionClass'
-import { EventEmitter } from 'events'
 import { DataHandler, DataManger } from './DMClass'
 
 var ip: string
