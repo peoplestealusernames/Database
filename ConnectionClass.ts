@@ -73,6 +73,7 @@ function SetUpSocket(Client: Connection) {
         for (const k of Client.Listens) {
             k.DM.off(k.path, Client.CB)
         }
+        console.log('Closed connection ' + Client.socket.remoteAddress + ":" + Client.socket.remotePort?.toString())
     })
 
     Client.socket.on('data', (data) => {

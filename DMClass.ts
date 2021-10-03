@@ -13,7 +13,7 @@ export class DataManger extends EventEmitter {
             try {
                 this.Data = JSON.parse(readFileSync(Path, 'utf-8'))
             } catch (e) {
-                console.log(e)
+                //console.log(e)
             }
         }
     }

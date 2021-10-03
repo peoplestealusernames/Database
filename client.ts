@@ -53,6 +53,8 @@ function GetSocket() {
     data: 'Aye',
     save: true
 }*/
+//const Send = {    method: 'PUT',    path: 'test',    data: 'Aye',    save: true}
+//const Send = {    method: 'GET',    path: 'test',    data: 'Aye',    save: true}
 
 const Send: Request = new Request('PUT', 'test', 'lets go')
 
