@@ -3,7 +3,6 @@ import { Connection } from './ConnectionClass'
 import { readFileSync, writeFileSync } from 'fs'
 
 export class DataManger extends EventEmitter {
-    //TODO: save data to file
     private Data: { [key: string]: any } = {}
     private FileLocation?: string
 

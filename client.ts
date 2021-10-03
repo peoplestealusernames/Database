@@ -31,7 +31,7 @@ function GetSocket() {
     return new Promise(async (resolve, rej) => {
         const HostAdress = await GetIP()
         const socket = connect({ port: HostAdress.port, host: HostAdress.ip })
-        //TODO:Rework
+
         const Server = new Connection(socket)
 
         Server.on('data', (data) => DataRec(data, Server))
