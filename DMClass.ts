@@ -29,17 +29,25 @@ export class DataManger extends EventEmitter {
         this.Data[Path] = Val
         if (Save)
             this.UpdateFile()
-        this.emit(Path)//TODO: call down the tree
+
+        this.emit(Path, this.Get(Path, true))//TODO: call down the tree
     }
 
     public HandleReq(Req: Request, Client: Connection) {
         switch (Req.method) {
-            case ('GET'): {
+            case ('GET'):
                 Client.write(this.Get(Req.path, true))
-            }
-            case ('PUT'): {
+                break
+
+            case ('PUT'):
                 this.Put(Req.path, Req.data, Req.save)
-            }
+                break
+
+            case ('LISTEN'):
+                const CB = Client.CB.bind(Client)
+                this.on(Req.path, CB)
+                CB(this.Get(Req.path, true))
+                break
         }
     }
 
@@ -63,10 +71,10 @@ export class DataManger extends EventEmitter {
 
 export class Request {
     path: string
-    method: 'GET' | 'PUT'
+    method: 'GET' | 'PUT' | 'LISTEN'
     data?: any
     save?: boolean
-    constructor(method: 'GET' | 'PUT', path: string, data?: any, save?: boolean) {
+    constructor(method: 'GET' | 'PUT' | 'LISTEN', path: string, data?: any, save?: boolean) {
         this.method = method
         this.path = path
         this.data = data

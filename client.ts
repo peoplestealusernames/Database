@@ -54,8 +54,9 @@ function GetSocket() {
 }*/
 
 const Send: Request = {
-    method: 'GET',
-    path: 'test'
+    method: 'PUT',
+    path: 'test',
+    data: 'lets go'
 }
 
 const DM = new DataManger()

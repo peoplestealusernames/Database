@@ -47,16 +47,17 @@ export class Connection extends EventEmitter {
         SetUpSocket(this)
     }
 
-    public write(msg: string, cb?: (err?: Error) => void) {
+    public write(msg: string, CallBack?: (err?: Error) => void) {
         if (!this.remotePublicKey) {
             throw new Error("Public key not recived wait for 'setup'")
         }
         const Send = Encrypt(this.remotePublicKey, msg)
-        this.socket.write(Send, cb)
+
+        this.socket.write(Send, CallBack)
     }
 
     public CB(data: object | string) {
-        if (typeof data == 'object')
+        if (typeof data != 'string')
             data = JSON.stringify(data)
 
         this.write(data, console.log)//TODO: error handling
@@ -65,7 +66,6 @@ export class Connection extends EventEmitter {
 
 function SetUpSocket(Client: Connection) {
     Client.socket.on('data', (data) => {
-        //console.log(data)
         if (Client.Encrypted) {
             var msg = Decrypt(Client.privateKeyObj, data).toString()
             try { msg = JSON.parse(msg) } catch (e) { }
