@@ -2,7 +2,6 @@ import { Socket } from 'net'
 import { KeyObject, createPrivateKey } from 'crypto'
 import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
-import { DataManger } from './DMClass'
 
 interface ConnectionEvents {
     'data': (data: object | string) => void;
@@ -30,7 +29,7 @@ export class Connection extends EventEmitter {
     public RecHandShake = false
     public Encrypted = false
 
-    public Listens: { DM: DataManger, path: string }[] = []
+    public Listens: { DM: EventEmitter, path: string }[] = []
 
     public constructor(socket: Socket) {
         super()
