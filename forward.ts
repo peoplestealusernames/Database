@@ -1,39 +1,6 @@
-import { request } from "https"
-import { readFileSync } from "fs"
-import { connect, createServer, Socket } from 'net'
+import { createServer, Socket } from 'net'
 import { Connection } from "./ConnectionClass"
-
-const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8'))
-
-function GetIP(): Promise<{ port: number, ip: string }> {
-    return new Promise((resolve, rej) => {
-        const req = request(Path, { method: 'GET' }, res => {
-            res.on('data', (data: any) => {
-                resolve(JSON.parse(data))
-            })
-        })
-
-        req.on('error', error => {
-            rej(error)
-        })
-
-        req.end()
-    })
-}
-
-function GetSocket(): Promise<Connection> {
-    return new Promise(async (resolve, rej) => {
-        const HostAdress = await GetIP()
-        const socket = connect({ port: HostAdress.port, host: HostAdress.ip })
-        //TODO:Retry
-
-        const Server = new Connection(socket)
-
-        Server.on('setup', () => { resolve(Server) })
-
-        socket.on('error', rej)
-    })
-}
+import { GetSocket } from "./ClientAPI"
 
 /////////////////////////
 //END OF CLIENT REC
