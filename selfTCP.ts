@@ -6,9 +6,9 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
             const ip = iptest.localAddress
             const port = iptest.localPort
 
+            iptest.destroy()
             await listen(ip, port, OnConnect)
 
-            iptest.destroy()
             const SelfTCP = connect({ port, host: ip }, () => {
                 res(SelfTCP)
             })
@@ -30,7 +30,11 @@ function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
 
         server.on('error', (err: any) => {
             if (err.code === "EADDRINUSE") {
-                console.log('Address in use waiting')
+                console.log('Address in use retrying')
+                setTimeout(() => {
+                    server.close()
+                    server.listen(port, ip)
+                }, 1000)
             } else {
                 rej(err)
             }
