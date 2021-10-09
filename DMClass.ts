@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import { Connection } from './ConnectionClass'
 import { readFileSync, writeFileSync } from 'fs'
 
+//TODO: OFFLINE MODE
 export class DataManger extends EventEmitter {
     private Data: { [key: string]: any } = {}
     private FileLocation?: string
@@ -25,11 +26,14 @@ export class DataManger extends EventEmitter {
         return Val
     }
     public Put(Path: string, Val: any, Save?: boolean) {
+        //TODO: emit only option where value is not saved but passed only
+        //Maybe make the this.data save if save is true
         this.Data[Path] = Val
         if (Save)
             this.UpdateFile()
 
         this.emit(Path, this.Get(Path, true))//TODO: call down the tree
+        //TODO: emit with raw data rather than a get req
     }
 
     public HandleReq(Req: Request, Client: Connection) {
@@ -42,7 +46,7 @@ export class DataManger extends EventEmitter {
                 this.Put(Req.path, Req.data, Req.save)
                 break
 
-            case ('LISTEN'):
+            case ('LISTEN'): //TODO: allow save on listen (only when server is told to save or always)
                 const CB = Client.CB
                 this.on(Req.path, CB)
                 CB(this.Get(Req.path, true))

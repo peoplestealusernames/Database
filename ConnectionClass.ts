@@ -107,3 +107,7 @@ function SetUpSocket(Client: Connection) {
     const PubKeySend = JSON.stringify({ Pub: Client.publicKey })
     Client.socket.write(PubKeySend)
 }
+
+//TODO: Move Getsocket with retires here
+//TODO: handel reconnect after 5 days (ref everyday) (dont make it auto as socket could drop)
+//TODO: Autoreconnector (resend setup with is reconnect: true)

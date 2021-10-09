@@ -19,9 +19,9 @@ function GetIP(): Promise<{ port: number, ip: string }> {
 
         req.end()
     })
-}
+}//TODO: Port somewhere else (shard lib)
 
-export function GetSocket(): Promise<Connection> {
+export function GetSocket(): Promise<Connection> {//TODO: add ip and adress in params
     return new Promise(async (resolve, rej) => {
         const HostAdress = await GetIP()
         const socket = connect({ port: HostAdress.port, host: HostAdress.ip })
