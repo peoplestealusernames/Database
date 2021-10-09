@@ -78,13 +78,15 @@ function SetUpSocket(Client: Connection) {
                 const Payload = JSON.parse(data.toString())
                 if (Payload.Pub) {
                     Client.remotePublicKey = Payload.Pub
-                    Client.socket.write("PUBREC") //TODO: send ack encypted
+                    setTimeout(() =>
+                        Client.socket.write("PUBREC") //TODO: send ack encypted
+                        , 100)
                 }
             } catch (err) {
                 if (data.toString() === "PUBREC") {
                     Client.RecHandShake = true
                 } else {
-                    console.log(err)
+                    console.log(data.toString(), err)
                 }
             } //TODO: ERR handling and drop Connectionion if fails
             if (Client.remotePublicKey && Client.RecHandShake) {
