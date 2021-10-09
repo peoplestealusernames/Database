@@ -31,7 +31,7 @@ export function Decrypt(privateKey: string, Data: NodeJS.ArrayBufferView | strin
     return Ret
 }
 
-Test()
+//Test()
 async function Test() {
     const Keys = GenKeysSync()
     const Text = "test"
