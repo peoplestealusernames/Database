@@ -8,8 +8,8 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
 
             await listen(ip, port, OnConnect)
 
+            iptest.destroy()
             const SelfTCP = connect({ port, host: ip }, () => {
-                iptest.destroy()
                 res(SelfTCP)
             })
             SelfTCP.on('error', rej)
@@ -28,7 +28,13 @@ function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
             res(true)
         });
 
-        server.on('error', rej)
+        server.on('error', (err: any) => {
+            if (err.code === "EADDRINUSE") {
+                console.log('Address in use waiting')
+            } else {
+                rej(err)
+            }
+        })
     })
 }
 
