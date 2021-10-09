@@ -1,7 +1,6 @@
 import { Socket } from 'net'
 import { SelfTCP } from './selfTCP'
 import { UpdateIP, LogIn } from './FBPut'
-import { GenKeys } from './crypto'
 import { Connection } from './ConnectionClass'
 import { DataHandler, DataManger } from './DMClass'
 
@@ -12,9 +11,6 @@ var publicKey: string, privateKey: string
 
 start()
 async function start() {
-    const Keys = await GenKeys()
-    publicKey = Keys.publicKey
-    privateKey = Keys.privateKey
     await LogIn()
     SelfTCP(NewSocket)
 }

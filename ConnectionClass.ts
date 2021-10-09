@@ -1,5 +1,4 @@
 import { Socket } from 'net'
-import { KeyObject, createPrivateKey } from 'crypto'
 import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
 
@@ -22,8 +21,7 @@ export class Connection extends EventEmitter {
     public socket: Socket
 
     public publicKey: string
-    private privateKey: string
-    public privateKeyObj: KeyObject
+    public privateKey: string
 
     public remotePublicKey?: string
     public RecHandShake = false
@@ -37,14 +35,6 @@ export class Connection extends EventEmitter {
         const Keys = GenKeysSync()
         this.publicKey = Keys.publicKey
         this.privateKey = Keys.privateKey
-        this.privateKeyObj = createPrivateKey({
-            //TODO: Formating in file
-            key: this.privateKey,
-            type: 'pkcs8',
-            format: 'pem',
-            //TODO:Passphrase
-            passphrase: 'top secret',
-        })
 
         SetUpSocket(this)
 
@@ -78,7 +68,7 @@ function SetUpSocket(Client: Connection) {
 
     Client.socket.on('data', (data) => {
         if (Client.Encrypted) {
-            var msg = Decrypt(Client.privateKeyObj, data).toString()
+            var msg = Decrypt(Client.privateKey, data).toString()
             try { msg = JSON.parse(msg) } catch (e) { }
             Client.emit('data', msg)
         } else {
