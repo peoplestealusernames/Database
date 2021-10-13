@@ -1,35 +1,24 @@
 import { Socket } from 'net'
 import { SelfTCP } from '../selfTCP' //TODO: ServerAPI
 import { UpdateIP, LogIn } from './FBPut' //TODO: ServerAPI with arg
-import { Connection, DataHandler, DataManger } from '../index'
+import { Server, Connection, DataHandler, DataManger } from '../index'
 
-var ip: string
-var port: number
-var selfSocket: Socket
+var Ser: Server
 
 start()
 async function start() {
     await LogIn()
-    SelfTCP(NewSocket)
-}
+    Ser = new Server()
+    Ser.on('client', (Client: Connection) => {
+        Client.on('data', (data: any) => { DataRec(data, Client) })
+    })
 
-function NewSocket(socket: Socket) {
-    //TODO: Move to server API
-    if (!selfSocket) {
-        selfSocket = socket
-        //@ts-ignore
-        ip = socket.localAddress
-        //@ts-ignore
-        port = socket.localPort
-        UpdateIP(ip, port)
-    }
-
-    console.log('New connection ' + socket.remoteAddress + ":" + socket.remotePort?.toString())
-
-    const Client = new Connection(socket)
-    Client.on('data', (data) => { DataRec(data, Client) });
-
-    socket.on('error', (err: any) => { console.log(err) })
+    Ser.on('setup', () => {
+        if (Ser.ip && Ser.port) {
+            UpdateIP(Ser.ip, Ser.port)
+            console.log("Updated ip")
+        } else console.log("Setup but could not post")
+    })
 }
 
 /////////////////////////

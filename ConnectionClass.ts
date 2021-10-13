@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 
 interface ConnectionEvents {
     'data': (data: object | string) => void;
-    'setup': () => void
+    'setup': () => void //TODO: error and closed
 }
 
 export declare interface Connection {
@@ -22,6 +22,7 @@ export class Connection extends EventEmitter {
 
     public publicKey: string
     public privateKey: string
+    public setup: boolean = false //TODO: Impliment along with await UntilSetup()
 
     public remotePublicKey?: string
     public RecHandShake = false
