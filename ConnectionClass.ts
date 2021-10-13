@@ -46,8 +46,8 @@ export class Connection extends EventEmitter {
             throw new Error("Public key not recived wait for 'setup'")
         }
         const Send = Encrypt(this.remotePublicKey, msg)
-
-        this.socket.write(Send, CallBack)
+        const SendBuf = Buffer.from(Send)
+        this.socket.write(SendBuf, CallBack)
     }
 
     public CB(data: object | string) {
@@ -68,6 +68,7 @@ function SetUpSocket(Client: Connection) {
     })
 
     Client.socket.on('data', (data) => {
+        //TODO: rewrite as errors have a chance to occour
         //console.log(data.toString())
         if (Client.Encrypted) {
             var msg = Decrypt(Client.privateKey, data).toString()

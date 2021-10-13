@@ -7,6 +7,7 @@ async function start() {
     const Server = await GetSocket()
     Server.write(JSON.stringify(Send))
     Server.on('data', (msg) => DataRec(msg, Server))
+    console.log("Setup and connected")
 }
 
 /*const Send: Request = {

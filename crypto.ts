@@ -15,7 +15,7 @@ export function GenKeysSync(keyLength = 100) {
     }
 }
 
-export function Encrypt(publicKey: string, Text: string) {
+export function Encrypt(publicKey: string, Text: string): String {
     var Ret = ""
     for (let i = 0; i < Text.length; i++) {
         let shift = i % publicKey.length
@@ -24,7 +24,7 @@ export function Encrypt(publicKey: string, Text: string) {
         Ret += String.fromCharCode(N)
     }
     //TODO: encrypt ret string by default
-    return Buffer.from(Ret)
+    return Ret
 }
 
 export function Decrypt(privateKey: string, Data: NodeJS.ArrayBufferView | string) {
