@@ -23,7 +23,6 @@ export function Encrypt(publicKey: string, Text: string): String {
         N = N % MaxChar + MaxChar * +(N < 0)
         Ret += String.fromCharCode(N)
     }
-    //TODO: encrypt ret string by default
     return Ret
 }
 
