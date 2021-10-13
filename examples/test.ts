@@ -1,7 +1,7 @@
 //65535
 //String.fromCharCode(65535).charCodeAt(0)
 
-import { Encrypt, GenKeysSync, Decrypt } from "./crypto";
+import { Encrypt, GenKeysSync, Decrypt } from "../crypto";
 
 /*
 for (let i = 0; i < 50000; i++) {

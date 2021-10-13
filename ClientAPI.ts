@@ -3,7 +3,7 @@ import { readFileSync } from "fs"
 import { connect } from 'net'
 import { Connection } from "./ConnectionClass"
 
-const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8'))
+const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8')) //TODO: to index
 
 function GetIP(): Promise<{ port: number, ip: string }> {
     return new Promise((resolve, rej) => {
@@ -34,8 +34,3 @@ export function GetSocket(): Promise<Connection> {//TODO: add ip and adress in p
         socket.on('error', rej)//TODO: err handling
     })
 }
-
-/////////////////////////
-//END OF CLIENT REC
-//START OF CLIENT HANDLING
-/////////////////////////

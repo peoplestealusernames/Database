@@ -1,8 +1,7 @@
 import { Socket } from 'net'
-import { SelfTCP } from './selfTCP'
-import { UpdateIP, LogIn } from './FBPut'
-import { Connection } from './ConnectionClass'
-import { DataHandler, DataManger } from './DMClass'
+import { SelfTCP } from '../selfTCP' //TODO: ServerAPI
+import { UpdateIP, LogIn } from './FBPut' //TODO: ServerAPI with arg
+import { Connection, DataHandler, DataManger } from '../index'
 
 var ip: string
 var port: number
@@ -15,6 +14,7 @@ async function start() {
 }
 
 function NewSocket(socket: Socket) {
+    //TODO: Move to server API
     if (!selfSocket) {
         selfSocket = socket
         //@ts-ignore

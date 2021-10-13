@@ -1,6 +1,4 @@
-import { Connection } from "./ConnectionClass"
-import { DataHandler, DataManger, Request } from "./DMClass"
-import { GetSocket } from "./ClientAPI"
+import { DataHandler, DataManger, Request, Connection, GetSocket } from "../index"
 
 start()
 async function start() {
@@ -23,7 +21,7 @@ async function start() {
 //const Send: Request = new Request('PUT', 'RGB', { r: 255, g: 255, b: 255 }, true)
 const Send: Request = new Request('PUT', 'SleepScreen', false, true)
 
-const DM = new DataManger('./Pass/ClientData.json')
+const DM = new DataManger('./Pass/ClientData.json') //TODO: to index
 
 function DataRec(data: string | object, Client: Connection) {
     console.log(data)

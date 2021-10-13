@@ -3,8 +3,8 @@ import { DatabaseReference, getDatabase, ref, set } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { readFileSync } from "fs"
 
-const firebaseConfig = JSON.parse(readFileSync('./Pass/FB.json', 'utf-8'))
-const Account = JSON.parse(readFileSync('./Pass/login.json', 'utf-8'))
+const firebaseConfig = JSON.parse(readFileSync('./Pass/FB.json', 'utf-8')) //TODO: move to index
+const Account = JSON.parse(readFileSync('./Pass/login.json', 'utf-8')) //TODO: move to index
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
