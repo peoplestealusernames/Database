@@ -18,7 +18,9 @@ async function start() {
 //const Send = {    method: 'PUT',    path: 'test',    data: 'Aye',    save: true}
 //const Send = {    method: 'GET',    path: 'test',    data: 'Aye',    save: true}
 
-const Send: Request = new Request('PUT', 'test', 'lets go')
+//const Send: Request = new Request('PUT', 'test', 'lets go')
+//const Send: Request = new Request('PUT', 'RGB', { r: 255, g: 255, b: 255 }, true)
+const Send: Request = new Request('PUT', 'SleepScreen', false, true)
 
 const DM = new DataManger('./Pass/ClientData.json')
 

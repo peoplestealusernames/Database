@@ -7,7 +7,6 @@ import { DataHandler, DataManger } from './DMClass'
 var ip: string
 var port: number
 var selfSocket: Socket
-var publicKey: string, privateKey: string
 
 start()
 async function start() {

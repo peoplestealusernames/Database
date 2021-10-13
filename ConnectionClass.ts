@@ -59,6 +59,7 @@ export class Connection extends EventEmitter {
 }
 
 function SetUpSocket(Client: Connection) {
+    //TODO: on setup remove all this complex BS and just emit the data
     Client.socket.on('close', (HadErr) => {
         for (const k of Client.Listens) {
             k.DM.off(k.path, Client.CB)
@@ -67,6 +68,7 @@ function SetUpSocket(Client: Connection) {
     })
 
     Client.socket.on('data', (data) => {
+        //console.log(data.toString())
         if (Client.Encrypted) {
             var msg = Decrypt(Client.privateKey, data).toString()
             try { msg = JSON.parse(msg) } catch (e) { }

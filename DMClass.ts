@@ -67,7 +67,7 @@ export class DataManger extends EventEmitter {
         if (!this.FileLocation)
             return
 
-        writeFileSync(this.FileLocation, JSON.stringify(this.Data))
+        writeFileSync(this.FileLocation, JSON.stringify(this.Data, null, 3))
     }
 }
 
@@ -98,3 +98,6 @@ export function DataHandler(data: string | object, Client: Connection, DM: DataM
         }
     }
 }
+
+//TODO: Set case sensitive vars ie sleep is only bool (rules file)
+//TODO: Auth and login
