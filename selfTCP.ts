@@ -6,11 +6,16 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
             const ip = iptest.localAddress
             const port = iptest.localPort
 
-            iptest.destroy()
+            //TODO: iptest destory removes pub ip but breaks linux
+            //iptest.destroy()
             await listen(ip, port, OnConnect)
 
             const SelfTCP = connect({ port, host: ip }, () => {
+                SelfTCP.off('error', rej)
+                iptest.off('error', rej)
                 res(SelfTCP)
+                //TODO: does not work offnetwork
+                iptest.destroy() //TODO: this is allowed and keeps ip pub
             })
             SelfTCP.on('error', rej)
         });

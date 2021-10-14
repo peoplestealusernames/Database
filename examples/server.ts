@@ -11,6 +11,7 @@ async function start() {
     Ser = new Server()
     Ser.on('client', (Client: Connection) => {
         Client.on('data', (data: any) => { DataRec(data, Client) })
+        Client.on('error', console.log)
     })
 
     Ser.on('setup', () => {

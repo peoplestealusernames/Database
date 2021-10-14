@@ -4,7 +4,9 @@ import { EventEmitter } from 'events'
 
 interface ConnectionEvents {
     'data': (data: object | string) => void;
-    'setup': () => void //TODO: error and closed
+    'setup': () => void
+    'error': (err: Error) => void
+    'close': (error: boolean) => void
 }
 
 export declare interface Connection {
@@ -18,6 +20,7 @@ export declare interface Connection {
 }
 
 export class Connection extends EventEmitter {
+    //TODO: add dividing char to string to prevent two packets being read as one
     public socket: Socket
 
     public publicKey: string
@@ -37,6 +40,9 @@ export class Connection extends EventEmitter {
         this.publicKey = Keys.publicKey
         this.privateKey = Keys.privateKey
 
+        this.socket.on('error', (data) => this.emit('error', data))
+        //Err handling is required or proccess dies
+        this.socket.on('close', (data) => this.emit('close', data))
         SetUpSocket(this)
 
         this.CB = this.CB.bind(this)
@@ -82,7 +88,7 @@ function SetUpSocket(Client: Connection) {
                 const Payload = JSON.parse(data.toString())
                 if (Payload.Pub) {
                     Client.remotePublicKey = Payload.Pub
-                    setTimeout(() =>
+                    setTimeout(() => //TODO: remove with packet system
                         Client.socket.write("PUBREC") //TODO: send ack encypted
                         , 100)
                 }
