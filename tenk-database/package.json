@@ -6,12 +6,11 @@
   "scripts": {},
   "author": "-10K-",
   "license": "ISC",
-  "optionalDependencies": {
-    "firebase": "^9.1.0"
-  },
+  "optionalDependencies": {},
   "dependencies": {
     "@types/node": "^16.11.0",
     "@types/typescript": "^2.0.0",
+    "ts-node": "^10.3.0",
     "typescript": "^4.4.4"
   }
 }
