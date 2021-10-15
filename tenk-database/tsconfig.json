@@ -1,17 +1,19 @@
 {
     "compilerOptions": {
-        "target": "esnext",
+        "target": "ES2016",
         "module": "commonjs",
         "lib": [
             "es6",
             "ES2020.Promise"
         ],
         "allowJs": true,
-        "outDir": "build",
+        "outDir": "js",
         "rootDir": ".",
         "strict": true,
         "noImplicitAny": true,
         "esModuleInterop": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "declaration": true,
+        "moduleResolution": "node",
     }
 }

@@ -1,9 +1,15 @@
 {
+  "type": "module",
   "name": "tenk-database",
-  "version": "1.0.3",
+  "module": "index.ts",
+  "version": "1.0.407",
   "description": "",
-  "main": "index.ts",
-  "scripts": {},
+  "main": "main.js",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
   "author": "-10K-",
   "license": "ISC",
   "optionalDependencies": {},
