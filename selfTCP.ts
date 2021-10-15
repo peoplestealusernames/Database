@@ -2,21 +2,20 @@ import { connect, createServer, Socket } from 'net'
 
 export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
     return new Promise((res, rej) => {
-        const iptest = connect({ allowHalfOpen: true, port: 80, host: "google.com" }, async () => {
+        const iptest = connect({ port: 80, host: "google.com" }, async () => {
             const ip = iptest.localAddress
             const port = iptest.localPort
 
-            //TODO: iptest destory removes pub ip but breaks linux
-            iptest.destroy()
-            await listen("0.0.0.0", port, OnConnect) //For this to be "0.0.0.0" ip test needs to be destroyed
+            //TODO: destroying ip test removes pub ip if you dont linux breaks
+            //iptest.destroy()
+            await listen(ip, port, OnConnect) //For this to be "0.0.0.0" ip test needs to be destroyed
 
             const SelfTCP = connect({ port, host: ip }, () => {
                 SelfTCP.off('error', rej)
                 iptest.off('error', rej)
                 res(SelfTCP)
-                //TODO: does not work offnetwork
-                //iptest.destroy() //TODO: this is allowed and keeps ip pub
-                //But its not needed?
+                //iptest.destroy()
+                //destroying ip test here seems to keep pub ip
             })
             SelfTCP.on('error', rej)
         });
@@ -27,7 +26,7 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
 
 function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
     return new Promise((res, rej) => {
-        var server = createServer({ allowHalfOpen: true }, OnConnect);
+        var server = createServer(OnConnect);
 
         server.listen(port, ip, function () {
             console.log('listening on ', ip + ":" + port);
