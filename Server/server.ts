@@ -1,7 +1,5 @@
-import { Socket } from 'net'
-import { SelfTCP } from '../selfTCP' //TODO: ServerAPI
-import { UpdateIP, LogIn } from './FBPut' //TODO: ServerAPI with arg
-import { Server, Connection, DataHandler, DataManger } from '../index'
+import { UpdateIP, LogIn } from './FBPut'
+import { Server, Connection, DataHandler, DataManger } from 'tenk-database'
 
 var Ser: Server
 

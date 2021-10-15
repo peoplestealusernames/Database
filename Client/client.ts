@@ -1,4 +1,4 @@
-import { DataHandler, DataManger, Request, Connection, GetSocket } from "../index"
+import { DataHandler, DataManger, Request, Connection, GetSocket } from "tenk-database"
 
 start()
 async function start() {
