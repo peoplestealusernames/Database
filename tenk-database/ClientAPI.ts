@@ -3,9 +3,9 @@ import { readFileSync } from "fs"
 import { connect } from 'net'
 import { Connection } from "./ConnectionClass"
 
-const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8')) //TODO: to index
-
 function GetIP(): Promise<{ port: number, ip: string }> {
+    const Path = JSON.parse(readFileSync('./Pass/HostName.json', 'utf-8')) //TODO: to index
+
     return new Promise((resolve, rej) => {
         const req = request(Path, { method: 'GET' }, res => {
             res.on('data', (data: any) => {
