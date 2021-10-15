@@ -14,7 +14,7 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
                 SelfTCP.off('error', rej)
                 iptest.off('error', rej)
                 res(SelfTCP)
-                //iptest.destroy()
+                iptest.destroy()
                 //destroying ip test here seems to keep pub ip
             })
             SelfTCP.on('error', rej)
