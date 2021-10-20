@@ -25,6 +25,7 @@ export class DataManger extends EventEmitter {
             return JSON.stringify(new Request('PUT', Path, Val) as object)
         return Val
     }
+
     public Put(Path: string, Val: any, Save?: boolean) {
         //TODO: emit only option where value is not saved but passed only
         //Maybe make the this.data save if save is true
