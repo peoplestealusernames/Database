@@ -1,6 +1,5 @@
 import { Socket } from 'net'
 import { SelfTCP, listen } from './selfTCP' //TODO: ServerAPI
-//import { UpdateIP, LogIn } from './FBPut' //TODO: ServerAPI with arg
 import { Connection } from "./ConnectionClass"
 import { EventEmitter } from 'events'
 import { env } from 'process'
