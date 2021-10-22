@@ -15,7 +15,8 @@ export declare class Server extends EventEmitter {
     ip?: string;
     port?: number;
     Setup: boolean;
-    constructor();
+    constructor(NatPunch?: boolean, port?: number, ip?: string);
+    private NatPunch;
     private NewSocket;
 }
 export {};

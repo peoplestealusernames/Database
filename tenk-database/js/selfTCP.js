@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SelfTCP = void 0;
+exports.listen = exports.SelfTCP = void 0;
 const net_1 = require("net");
 function SelfTCP(OnConnect) {
     return new Promise((res, rej) => {
@@ -19,14 +19,19 @@ function SelfTCP(OnConnect) {
             //TODO: destroying ip test removes pub ip if you dont linux breaks
             //iptest.destroy()
             yield listen(ip, port, OnConnect); //For this to be "0.0.0.0" ip test needs to be destroyed
-            const SelfTCP = (0, net_1.connect)({ port, host: ip }, () => {
-                SelfTCP.off('error', rej);
-                iptest.off('error', rej);
-                res(SelfTCP);
-                iptest.destroy();
-                //destroying ip test here seems to keep pub ip
-            });
-            SelfTCP.on('error', rej);
+            res(iptest);
+            //old method 
+            //I'm 99% sure this does nothing because the google connection
+            //is what keep the ip public and open
+            /*const SelfTCP = connect({ port, host: ip }, () => {
+                SelfTCP.off('error', rej)
+                iptest.off('error', rej)
+                res(SelfTCP)
+                //iptest.destroy()
+                //destroying ip test will remove public ip
+                //seems like its after a connection is closed
+            })
+            SelfTCP.on('error', rej)*/
         }));
         iptest.on('error', rej);
     });
@@ -53,3 +58,4 @@ function listen(ip, port, OnConnect) {
         });
     });
 }
+exports.listen = listen;

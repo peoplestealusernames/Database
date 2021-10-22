@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./DMClass"), exports);
 __exportStar(require("./ConnectionClass"), exports);
 __exportStar(require("./ClientAPI"), exports);
-__exportStar(require("./ServerClass"), exports);
+__exportStar(require("./ServerAPI"), exports);
 //TODO: check function that will return needed vars for server or client
 //TODO: isSetup():bool thats automatic to be ref by other API (runs in test from index)
 //TODO: Set*varname*(value) for all needed to be phrased

@@ -1,6 +1,6 @@
 {
   "name": "tenk-database",
-  "version": "1.0.414",
+  "version": "1.1.0",
   "description": "",
   "main": "js/index.js",
   "typings": "js/index",
