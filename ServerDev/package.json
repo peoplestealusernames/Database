@@ -1,0 +1,18 @@
+{
+  "name": "serverdev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "dependencies": {
+    "@types/node": "^16.11.0",
+    "@types/typescript": "^2.0.0",
+    "firebase": "^9.1.3",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  },
+  "scripts": {
+    "start": "ts-node server.ts"
+  },
+  "author": "",
+  "license": "ISC"
+}
