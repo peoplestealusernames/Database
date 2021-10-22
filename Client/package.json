@@ -6,13 +6,12 @@
   "dependencies": {
     "@types/node": "^16.11.0",
     "@types/typescript": "^2.0.0",
-    "tenk-database": "^1.0.413",
+    "tenk-database": "^1.1.0",
     "ts-node": "^10.3.0",
     "typescript": "^4.4.4"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "ts-node client.ts"
+    "start": "ts-node client.ts"
   },
   "author": "",
   "license": "ISC"

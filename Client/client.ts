@@ -1,9 +1,14 @@
-import { DataHandler, DataManger, Request, Connection, GetSocket } from "tenk-database"
+import { connect } from "net"
+import { DataHandler, DataManger, Request, Connection } from "tenk-database"
 
-start()
+const socket = connect({ port: 8000, host: "Server" }, start)
 async function start() {
-    const Server = await GetSocket()
-    Server.write(JSON.stringify(Send))
+    //TODO:Retry
+    const Server = new Connection(socket)
+
+    Server.on('setup', () => { Server.write(JSON.stringify(Send)); console.log("Setup") })
+
+    //socket.on('error', console.log)//TODO: err handling
     Server.on('data', (msg) => DataRec(msg, Server))
     console.log("Setup and connected")
 }
@@ -19,7 +24,7 @@ async function start() {
 
 //const Send: Request = new Request('PUT', 'test', 'lets go')
 //const Send: Request = new Request('PUT', 'RGB', { r: 255, g: 255, b: 255 }, true)
-const Send: Request = new Request('PUT', 'SleepScreen', false, true)
+var Send = new Request('LISTEN', 'RGB')
 
 const DM = new DataManger('./Pass/ClientData.json') //TODO: to index
 
