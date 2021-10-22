@@ -1,4 +1,4 @@
-import { Server, Connection, DataHandler, DataManger } from 'tenk-database/index'
+import { Server, Connection, DataHandler, DataManger } from 'tenk-database/ts/index'
 
 var Ser: Server
 
