@@ -25,7 +25,7 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
     })
 }
 
-function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
+export function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
     return new Promise((res, rej) => {
         var server = createServer(OnConnect);
 
