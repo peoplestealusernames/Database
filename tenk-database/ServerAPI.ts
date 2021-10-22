@@ -49,8 +49,9 @@ export class Server extends EventEmitter {
 
     private async NatPunch() {
         this.selfSocket = await SelfTCP(this.NewSocket.bind(this))
-        this.ip = this.selfSocket.remoteAddress
-        this.port = this.selfSocket.remotePort
+        //TODO: double check I'm 50% sure this will break
+        this.ip = this.selfSocket.localAddress
+        this.port = this.selfSocket.localPort
     }
 
     private NewSocket(socket: Socket) {

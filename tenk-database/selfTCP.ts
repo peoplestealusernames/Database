@@ -10,7 +10,12 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
             //iptest.destroy()
             await listen(ip, port, OnConnect) //For this to be "0.0.0.0" ip test needs to be destroyed
 
-            const SelfTCP = connect({ port, host: ip }, () => {
+            res(iptest)
+
+            //old method 
+            //I'm 99% sure this does nothing because the google connection
+            //is what keep the ip public and open
+            /*const SelfTCP = connect({ port, host: ip }, () => {
                 SelfTCP.off('error', rej)
                 iptest.off('error', rej)
                 res(SelfTCP)
@@ -18,7 +23,7 @@ export function SelfTCP(OnConnect: (socket: Socket) => void): Promise<Socket> {
                 //destroying ip test will remove public ip
                 //seems like its after a connection is closed
             })
-            SelfTCP.on('error', rej)
+            SelfTCP.on('error', rej)*/
         });
 
         iptest.on('error', rej)
