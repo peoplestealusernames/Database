@@ -32,7 +32,8 @@ export class Server extends EventEmitter {
 
         this.ip = ip
         this.port = port
-        if (!this.port)
+
+        if (undefined == this.port)
             if (env.PORT) {
                 this.port = parseInt(env.PORT)
             } else {
@@ -40,7 +41,6 @@ export class Server extends EventEmitter {
             }
 
         listen(this.ip, this.port, this.NewSocket.bind(this))
-
     }
 
     private NewSocket(socket: Socket) {

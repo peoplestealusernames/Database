@@ -1,4 +1,4 @@
-import { connect, createServer, Socket } from 'net'
+import { createServer, Socket } from 'net'
 
 export function listen(ip: string, port: number, OnConnect: (socket: Socket) => void) {
     return new Promise((res, rej) => {
