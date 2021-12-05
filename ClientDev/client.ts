@@ -1,15 +1,19 @@
 import { connect } from "net"
-import { DataHandler, DataManger, Request, Connection } from "tenk-database"
+import { DataHandler, DataManger, Request, Connection } from "tenk-database/ts/index"
 
-const socket = connect({ port: 8000, host: "Server" }, start)
 async function start() {
     //TODO:Retry
+    const socket = connect({ port: 8000, host: "Server" }, start)
     const Server = new Connection(socket)
-
     Server.on('setup', () => { Server.write(JSON.stringify(Send)); console.log("Setup") })
 
     //socket.on('error', console.log)//TODO: err handling
     Server.on('data', (msg) => DataRec(msg, Server))
+    Server.on('error', (err) => {
+        if (Server.setup) throw new Error(err);
+        console.log("Error connecting retrying")
+        setTimeout(start, 1000)
+    })
     console.log("Setup and connected")
 }
 
