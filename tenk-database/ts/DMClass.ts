@@ -1,40 +1,42 @@
 import { EventEmitter } from 'events'
 import { Connection } from './ConnectionClass'
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 
-//TODO: OFFLINE MODE
 export class DataManger extends EventEmitter {
-    private Data: { [key: string]: any } = {}
-    private FileLocation?: string
+    private FileLocation: string
 
-    constructor(Path?: string) {
+    constructor(FilePath: string) {
         super()
-        if (Path) {
-            this.FileLocation = Path
-            try {
-                this.Data = JSON.parse(readFileSync(Path, 'utf-8'))
-            } catch (e) {
-                //console.log(e)
-            }
+
+        if (!existsSync(FilePath)) {
+            throw new Error("Path given does not exist")
         }
+
+        if (FilePath[FilePath.length - 1] !== "/")
+            FilePath += "/"
+
+        this.FileLocation = FilePath
     }
 
-    public Get(Path: string, ReqOut: boolean) {
-        const Val = this.Data[Path]
-        if (ReqOut)
-            return JSON.stringify(new Request('PUT', Path, Val) as object)
-        return Val
+    public Get(Path: string, RequestOut = false) {
+        var GPath = this.FileLocation + Path
+
+        if (existsSync(GPath + ".json"))
+            GPath += ".json"
+        const Ret = this.BuildTable(GPath)
+        if (RequestOut)
+            return JSON.stringify(Ret)
+        else
+            return Ret
     }
 
-    public Put(Path: string, Val: any, Save?: boolean) {
-        //TODO: emit only option where value is not saved but passed only
-        //Maybe make the this.data save if save is true
-        this.Data[Path] = Val
-        if (Save)
-            this.UpdateFile()
+    public Put(Path: string, Val: any, Save = true) {
+        //TODO: Reimpiment when save is false
+        //TODO: purge all data as Put is not Post
+        //TODO: situation where folder and file.json exists
+        this.BreakDownTable(this.FileLocation + Path, Val)
 
-        this.emit(Path, this.Get(Path, true))//TODO: call down the tree
-        //TODO: emit with raw data rather than a get req
+        this.emit(Path, this.Get(Path, true))
     }
 
     public HandleReq(Req: Request, Client: Connection) {
@@ -56,23 +58,49 @@ export class DataManger extends EventEmitter {
         }
     }
 
-    private StringToIndex() {
-        //TODO: Impliment
-    }
-    private TableToIndex() {
-        //TODO: impliment
+    private BreakDownTable(Path: string, Data: any) {
+        if (typeof (Data) != "object")
+            WriteFile(Path + ".json", JSON.stringify(Data))
+        else
+            Object.keys(Data).forEach(key => {
+                this.BreakDownTable(Path + "/" + key, Data[key])
+            })
     }
 
-    private UpdateFile() {
-        //TODO: Split into multiple files based on path to save lag
-        if (!this.FileLocation)
-            return
+    private BuildTable(Path: string) {
+        //TODO: find way to not crash with recursive folder
 
-        writeFileSync(this.FileLocation, JSON.stringify(this.Data, null, 3))
+        if (lstatSync(Path).isFile())
+            try {
+                return JSON.parse(readFileSync(Path, { encoding: 'utf8' }))
+            } catch (e) {
+                if (e && typeof (e) == 'object' &&
+                    e.toString().includes("Unexpected end of JSON input"))
+                    console.error("Potental data corruption at " + Path)
+                else
+                    console.error(e)
+                return
+            }
+        else {
+            var Files = readdirSync(Path)
+            var Obj: { [key: string]: any } = {}
+            Files.forEach(x1Path => {
+                Obj[x1Path] = this.BuildTable(Path + "/" + x1Path)
+            });
+            return Obj
+        }
     }
 }
 
 //TODO: GetReq autohandling with the EventHandler.once event
+
+function WriteFile(Path: string, Val: string) {
+    const DirA = Path.split('/')
+    delete DirA[DirA.length - 1]
+    const Dir = DirA.join("/")
+    mkdirSync(Dir, { recursive: true })
+    writeFileSync(Path, Val)
+}
 
 export class Request {
     path: string
