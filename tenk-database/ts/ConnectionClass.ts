@@ -7,6 +7,7 @@ interface ConnectionEvents {
     'setup': () => void
     'error': (err: Error) => void
     'close': (error: boolean) => void
+    'timeout': () => void
 }
 
 export declare interface Connection {
@@ -33,6 +34,7 @@ export class Connection extends EventEmitter {
 
     public Listens: { DM: EventEmitter, path: string }[] = []
 
+    //TODO: constructor with ip and port
     public constructor(socket: Socket) {
         super()
         this.socket = socket
@@ -40,9 +42,11 @@ export class Connection extends EventEmitter {
         this.publicKey = Keys.publicKey
         this.privateKey = Keys.privateKey
 
-        this.socket.on('error', (data) => this.emit('error', data))
         //Err handling is required or proccess dies
+        this.socket.on('error', (data) => this.emit('error', data))
         this.socket.on('close', (data) => this.emit('close', data))
+        this.socket.on('timeout', () => this.emit('timeout'));
+        //TODO: foreach event type
         SetUpSocket(this)
 
         this.CB = this.CB.bind(this)
