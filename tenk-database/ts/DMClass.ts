@@ -85,7 +85,10 @@ export class DataManger extends EventEmitter {
             var Files = readdirSync(Path)
             var Obj: { [key: string]: any } = {}
             Files.forEach(x1Path => {
-                Obj[x1Path] = this.BuildTable(Path + "/" + x1Path)
+                var K = x1Path
+                if (K.slice(-5) == '.json')
+                    K = K.substr(0, K.length - 5)
+                Obj[K] = this.BuildTable(Path + "/" + x1Path)
             });
             return Obj
         }
