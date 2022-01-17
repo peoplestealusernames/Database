@@ -1,4 +1,4 @@
-import { Socket } from 'net'
+import { connect, Socket } from 'net'
 import { Encrypt, Decrypt, GenKeysSync } from './crypto'
 import { EventEmitter } from 'events'
 
@@ -67,6 +67,19 @@ export class Connection extends EventEmitter {
 
         this.write(data, console.log)//TODO: error handling
     }
+}
+
+export function GetSocket(host: string, port: number): Promise<Connection> {//TODO: add ip and adress in params
+    return new Promise(async (resolve, rej) => {
+        const socket = connect({ port, host })
+        //TODO:Retry
+
+        const Server = new Connection(socket)
+
+        Server.on('setup', () => { resolve(Server) })
+
+        socket.on('error', rej)//TODO: err handling
+    })
 }
 
 function SetUpSocket(Client: Connection) {
