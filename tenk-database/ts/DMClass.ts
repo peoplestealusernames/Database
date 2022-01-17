@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import { Connection } from './ConnectionClass'
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { Request } from './RequestClass'
 
 export class DataManger extends EventEmitter {
     private FileLocation: string
@@ -42,7 +43,7 @@ export class DataManger extends EventEmitter {
     public HandleReq(Req: Request, Client: Connection) {
         switch (Req.method) {
             case ('GET'):
-                Client.write(this.Get(Req.path, true))
+                Client.CB(this.Get(Req.path, true))
                 break
 
             case ('PUT'):
@@ -50,6 +51,7 @@ export class DataManger extends EventEmitter {
                 break
 
             case ('LISTEN'): //TODO: allow save on listen (only when server is told to save or always)
+                //TODO: a listener to how many listeners are tuned in to prevent over sending
                 const CB = Client.CB
                 this.on(Req.path, CB)
                 CB(this.Get(Req.path, true))
@@ -103,19 +105,6 @@ function WriteFile(Path: string, Val: string) {
     const Dir = DirA.join("/")
     mkdirSync(Dir, { recursive: true })
     writeFileSync(Path, Val)
-}
-
-export class Request {
-    path: string
-    method: 'GET' | 'PUT' | 'LISTEN'
-    data?: any
-    save?: boolean
-    constructor(method: 'GET' | 'PUT' | 'LISTEN', path: string, data?: any, save?: boolean) {
-        this.method = method
-        this.path = path
-        this.data = data
-        this.save = save
-    }
 }
 
 export function DataHandler(data: string | object, Client: Connection, DM: DataManger) {
