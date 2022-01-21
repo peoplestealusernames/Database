@@ -2,7 +2,7 @@ import { DataManger } from "tenk-database/ts";
 
 const DM = new DataManger('./ServerData')
 DM.Put("Test", { a: true })
-console.log(DM.Get("Test/a"))
+console.log(DM.Get(""))
 
 /*
 import { connect } from "net";

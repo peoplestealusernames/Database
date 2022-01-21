@@ -1,8 +1,6 @@
 //65535
 //String.fromCharCode(65535).charCodeAt(0)
 
-import { Encrypt, GenKeysSync, Decrypt } from "../crypto";
-
 /*
 for (let i = 0; i < 50000; i++) {
     let A = String.fromCharCode(i)
@@ -42,3 +40,8 @@ for (let times = 1000; times > 0; times--) {
         console.log("err")
 }
 */
+
+import { EventEmitter } from 'events'
+
+const Event = new EventEmitter
+Event.emit('Test', null)

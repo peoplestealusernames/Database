@@ -1,21 +1,4 @@
-import { connect } from "net"
-import { DataHandler, DataManger, Request, Connection } from "tenk-database/ts/index"
-
-async function start() {
-    //TODO:Retry
-    const socket = connect({ port: 8000, host: "Server" }, start)
-    const Server = new Connection(socket)
-    Server.on('setup', () => { Server.write(JSON.stringify(Send)); console.log("Setup") })
-
-    //socket.on('error', console.log)//TODO: err handling
-    Server.on('data', (msg) => DataRec(msg, Server))
-    Server.on('error', (err) => {
-        if (Server.setup) throw new Error(err);
-        console.log("Error connecting retrying")
-        setTimeout(start, 1000)
-    })
-    console.log("Setup and connected")
-}
+import { Request, Client } from "tenk-database/ts/index"
 
 /*const Send: Request = {
     method: 'PUT',
@@ -30,13 +13,8 @@ async function start() {
 //const Send: Request = new Request('PUT', 'RGB', { r: 255, g: 255, b: 255 }, true)
 var Send = new Request('LISTEN', 'RGB')
 
-const DM = new DataManger('./Pass/ClientData.json') //TODO: to index
+const Server = new Client("localhost", 5555)
 
-function DataRec(data: string | object, Client: Connection) {
-    console.log(data)
-    if (data === 'PING') {
-        Client.write('PONG')
-    }
-
-    DataHandler(data, Client, DM)
-}
+Server.on('setup', () => {
+    Server.get('RGB').then((data) => { console.log("AYE ", data) })
+})

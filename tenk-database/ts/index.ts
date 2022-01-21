@@ -3,7 +3,7 @@
 
 export * from './DMClass'
 export * from './ConnectionClass'
-export * from './ClientAPI'
+export * from './ClientClass'
 export * from './ServerAPI'
 export * from './RequestClass'
 

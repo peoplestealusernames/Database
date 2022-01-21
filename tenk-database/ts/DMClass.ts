@@ -22,11 +22,16 @@ export class DataManger extends EventEmitter {
     public Get(Path: string, RequestOut = false) {
         var GPath = this.FileLocation + Path
 
+        let Ret = null
+
         if (existsSync(GPath + ".json"))
             GPath += ".json"
-        const Ret = this.BuildTable(GPath)
+
+        if (existsSync(GPath))
+            Ret = this.BuildTable(GPath)
+
         if (RequestOut)
-            return JSON.stringify(Ret)
+            return new Request('PUT', Path, Ret)
         else
             return Ret
     }
