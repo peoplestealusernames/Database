@@ -2,9 +2,6 @@
 //TODO: impliment
 
 export * from './DMClass'
-export * from './ConnectionClass'
-export * from './ClientClass'
-export * from './ServerAPI'
 export * from './RequestClass'
 
 //TODO: check function that will return needed vars for server or client

@@ -1,47 +1,80 @@
-import { Server, Connection, DataHandler, DataManger } from 'tenk-database/ts/index'
-import { connect } from 'net';
-import { LogIn, UpdateIP } from './FBPut';
+import localtunnel from 'localtunnel';
+import http from 'http';
+import { WebSocketServer } from 'ws';
+import { DataManger, Request } from 'tenk-database/ts/index'
 
-var Ser: Server
+const DM = new DataManger("Data")
 
-//TODO find out why it only works on local ip
-/*start()
-async function start() {
-    await LogIn()
+//TODO: Login system
 
-    const iptest = connect({ port: 80, host: "google.com" }, async () => {
-        const ip = iptest.localAddress
-        const port = iptest.localPort
+const server = http.createServer((req, res) => {
+    console.log(req.socket.remoteAddress)
+    let Data = ""
+    //console.log(req.method)
+    /*
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('X-Foo', 'bar');
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    */
+    req.on('data', (chunk) => { Data += chunk })
 
-        console.log('Public ip: ', ip, port)
-        UpdateIP(ip, port)
+    req.on('end', () => {
+        if (req.headers['content-type'] == "application/json")
+            Data = JSON.parse(Data)
 
-        Ser = new Server(ip, port) //TODO: TESTMODE ONLY
-        Ser.on('client', (Client: Connection) => {
-            Client.on('data', (data: any) => { DataRec(data, Client) })
-            Client.on('error', console.log)
-        })
+        if (req.url && req.method) {
+            const URLBreak = req.url.split('/')
+            URLBreak.splice(0, 1)
+
+            if (URLBreak[0] == "api" && URLBreak[1] == "data") {
+                const PathArr = URLBreak
+                PathArr.splice(0, 2)
+                const Path = PathArr.join('/')
+
+                res.setHeader('Content-Type', 'application/json');
+
+                //TODO: Codes and error handling
+                if (req.method == "GET") {
+                    const Ret = JSON.stringify(DM.Get(Path))
+                    res.end(Ret)
+                    console.log(req.method, Path, Ret)
+                    return
+                }
+
+                if (req.method == "PUT") {
+                    const Ret = JSON.stringify(DM.Put(Path, Data))
+                    res.end(Ret)
+                    console.log(req.method, Path, Data, Ret)
+                    return
+                }
+
+            }
+        }
+
+        res.end('ok');
+    })
+});
+
+const wss = new WebSocketServer({ server });
+wss.on('connection', function connection(ws) {
+    ws.on('message', function message(data) {
+        console.log(JSON.parse(data.toString()))
+        DM.HandleReq(JSON.parse(data.toString()),
+            (data: Request) => {
+                console.log("out", data)
+                ws.send(Buffer.from(JSON.stringify(data)))
+            })
     });
-}*/
+});
 
-/////////////////////////
-//END OF CLIENT REC
-//START OF CLIENT HANDLING
-/////////////////////////
+server.listen(5000, "localhost")
 
-Ser = new Server('localhost', 5555) //TODO: TESTMODE ONLY
-Ser.on('client', (Client: Connection) => {
-    Client.on('data', (data: any) => { DataRec(data, Client) })
-    Client.on('error', console.log)
-})
+//TODO: subdomain from file
+/*const tunnel = localtunnel(5000, { subdomain: 'leserver102' }, (err, tunnel) => {
+    console.log(tunnel?.url)
+});
 
-const DM = new DataManger('./ServerData')
-
-function DataRec(data: string | object, Client: Connection) {
-    console.log(data)
-    if (data === 'PING') {
-        Client.write('PONG')
-    }
-
-    DataHandler(data, Client, DM)
-}
+tunnel.on('close', function () {
+    // When the tunnel is closed
+});
+*/

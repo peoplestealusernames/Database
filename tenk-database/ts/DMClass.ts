@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events'
-import { Connection } from './ConnectionClass'
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import { Request } from './RequestClass'
 
@@ -13,14 +12,14 @@ export class DataManger extends EventEmitter {
             throw new Error("Path given does not exist")
         }
 
-        if (FilePath[FilePath.length - 1] !== "/")
-            FilePath += "/"
+        if (FilePath[FilePath.length - 1] === "/")
+            FilePath = FilePath.slice(0, FilePath.length - 2)[0]
 
         this.FileLocation = FilePath
     }
 
     public Get(Path: string, RequestOut = false) {
-        var GPath = this.FileLocation + Path
+        var GPath = this.FileLocation + '/' + Path
 
         let Ret = null
 
@@ -40,16 +39,13 @@ export class DataManger extends EventEmitter {
         //TODO: Reimpiment when save is false
         //TODO: purge all data as Put is not Post
         //TODO: situation where folder and file.json exists
-        //TODO: emit up the line when changes are made
         this.BreakDownTable(this.FileLocation + Path, Val)
-
-        this.emit(Path, this.Get(Path, true))
     }
 
-    public HandleReq(Req: Request, Client: Connection) {
+    public HandleReq(Req: Request, CallBack: (Data: Request) => void) {
         switch (Req.method) {
             case ('GET'):
-                Client.CB(this.Get(Req.path, true))
+                CallBack(this.Get(Req.path, true))
                 break
 
             case ('PUT'):
@@ -58,21 +54,28 @@ export class DataManger extends EventEmitter {
 
             case ('LISTEN'): //TODO: allow save on listen (only when server is told to save or always)
                 //TODO: a listener to how many listeners are tuned in to prevent over sending
-                const CB = Client.CB
-                this.on(Req.path, CB)
-                CB(this.Get(Req.path, true))
-                Client.Listens.push({ path: Req.path, DM: this })
+                this.on(Req.path, CallBack)
+                CallBack(this.Get(Req.path, true))
+                //TODO: Remove listener automaticly
                 break
         }
     }
 
     private BreakDownTable(Path: string, Data: any) {
-        if (typeof (Data) != "object")
+        if (typeof (Data) != "object") {
             WriteFile(Path + ".json", JSON.stringify(Data))
-        else
+        } else {
             Object.keys(Data).forEach(key => {
-                this.BreakDownTable(Path + "/" + key, Data[key])
+                const Place = Path + "/" + key
+                this.BreakDownTable(Place, Data[key])
+
+                const Grab = Place.slice(this.FileLocation.length + 1, Place.length)
+                //console.log(Grab, Place)
+                //TODO: format into request instead of regrabbing
+                //TODO: check for listeners first
+                this.emit(Grab, this.Get(Grab, true))
             })
+        }
     }
 
     private BuildTable(Path: string) {
@@ -111,19 +114,6 @@ function WriteFile(Path: string, Val: string) {
     const Dir = DirA.join("/")
     mkdirSync(Dir, { recursive: true })
     writeFileSync(Path, Val)
-}
-
-export function DataHandler(data: string | object, Client: Connection, DM: DataManger) {
-    if (typeof (data) != 'object') {
-        return
-    }
-
-    if (typeof (data) == 'object') {
-        if (data.hasOwnProperty('method') && data.hasOwnProperty('path')) {
-            const Req = data as Request
-            DM.HandleReq(Req, Client)
-        }
-    }
 }
 
 //TODO: Set case sensitive vars ie sleep is only bool (rules file)
