@@ -57,6 +57,7 @@ export class DataManger extends EventEmitter {
                 this.on(Req.path, CallBack)
                 CallBack(this.Get(Req.path, true))
                 //TODO: Remove listener automaticly
+                //TODO: Remove caller on error
                 break
         }
     }
